@@ -8,19 +8,31 @@ POST http://localhost:3333/videos
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="example.mp3"
+Content-Disposition: form-data; name="file"; filename="audio.mp3"
 Content-Type: audio/mpeg
 
-< ./example.mp3
+< ./audio.mp3
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
 
 # @name create-transcription
-POST http://localhost:3333/videos/17d49a68-08f0-4ad1-9781-a280b2bcfe62/transcription
+POST http://localhost:3333/videos/e40f54f9-cff3-45cc-bbf4-de6bcf1818dd/transcription
 Content-Type: application/json
 
 // keywords for accurate transcription
 {
-  "prompt": "test"
+  "prompt": "natal"
+}
+
+###
+
+# @name generate-ai-completion
+POST http://localhost:3333/ai/complete
+Content-Type: application/json
+
+{
+  "temperature": 0.5,
+  "template": "Gere um resumo sucinto da transcrição do vídeo informado a seguir: '''{transcription}'''",
+  "videoId": "e40f54f9-cff3-45cc-bbf4-de6bcf1818dd"
 }
