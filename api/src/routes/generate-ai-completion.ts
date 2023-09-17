@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { OpenAIStream, streamToResponse } from 'ai';
 import { z } from 'zod';
 import openai from '../lib/openai';
 import prisma from '../lib/prisma';
@@ -25,10 +26,20 @@ export default async function generateAICompletion(app: FastifyInstance) {
 
     const content = template.replace('{transcription}', transcription);
 
-    return openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       messages: [{ content, role: 'user' }],
       model: 'gpt-3.5-turbo-16k',
+      stream: true,
       temperature,
+    });
+
+    const stream = OpenAIStream(response);
+
+    streamToResponse(stream, res.raw, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      },
     });
   });
 }
