@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import api from '@/lib/axios';
 import {
   Select,
   SelectContent,
@@ -6,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import api from '@/lib/axios';
 
 interface Prompts {
   id: string;
