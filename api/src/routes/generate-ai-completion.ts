@@ -8,11 +8,11 @@ export default async function generateAICompletion(app: FastifyInstance) {
   app.post('/ai/complete', async (req, res) => {
     const bodySchema = z.object({
       temperature: z.number().min(0).max(1).default(0.5),
-      template: z.string(),
+      prompt: z.string(),
       videoId: z.string().uuid(),
     });
 
-    const { temperature, template, videoId } = bodySchema.parse(req.body);
+    const { temperature, prompt, videoId } = bodySchema.parse(req.body);
 
     const { transcription } = await prisma.video.findUniqueOrThrow({
       where: { id: videoId },
@@ -24,7 +24,7 @@ export default async function generateAICompletion(app: FastifyInstance) {
         .send({ error: 'Video transcription was not generated yet.' });
     }
 
-    const content = template.replace('{transcription}', transcription);
+    const content = prompt.replace('{transcription}', transcription);
 
     const response = await openai.chat.completions.create({
       messages: [{ content, role: 'user' }],
