@@ -12,8 +12,17 @@ import {
 } from './components/ui/select';
 import { Slider } from './components/ui/slider';
 import VideoInputForm from './components/video-input-form';
+import PromptSelect from './components/prompt-select';
+import { useState } from 'react';
 
 export default function App() {
+  const [temperature, setTemperature] = useState(0.5);
+  const [videoId, setVideoId] = useState<string | null>(null);
+
+  const handlePromptSelected = (template: string) => {
+    console.log(template);
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex items-center justify-between border-b px-6 py-3">
@@ -55,7 +64,7 @@ export default function App() {
         </div>
 
         <aside className="w-80 space-y-6">
-          <VideoInputForm />
+          <VideoInputForm onVideoUploaded={setVideoId} />
 
           <Separator />
 
@@ -63,17 +72,7 @@ export default function App() {
             <div className="space-y-2">
               <Label>Prompt</Label>
 
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um prompt..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="title">Título do Youtube</SelectItem>
-                  <SelectItem value="description">
-                    Descrição do Youtube
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <PromptSelect onPromptSelected={handlePromptSelected} />
             </div>
 
             <div className="space-y-2">
@@ -97,7 +96,13 @@ export default function App() {
             <div className="space-y-4">
               <Label>Temperatura</Label>
 
-              <Slider max={1} min={0} step={0.1} />
+              <Slider
+                max={1}
+                min={0}
+                onValueChange={(value) => setTemperature(value[0])}
+                step={0.1}
+                value={[temperature]}
+              />
               <span className="block text-xs italic leading-relaxed text-muted-foreground">
                 Valores mais altos tendem adeixar o resultado mais criativo e
                 com possíveis erros.

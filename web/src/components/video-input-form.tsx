@@ -8,6 +8,10 @@ import getFFmpeg from '@/lib/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
 import api from '@/lib/axios';
 
+interface VideoInputFormProps {
+  onVideoUploaded: (id: string) => void;
+}
+
 type Status = 'converting' | 'generating' | 'success' | 'uploading' | 'waiting';
 
 const statusMessages = {
@@ -17,7 +21,9 @@ const statusMessages = {
   uploading: 'Carregando...',
 };
 
-export default function VideoInputForm() {
+export default function VideoInputForm({
+  onVideoUploaded,
+}: VideoInputFormProps) {
   const [status, setStatus] = useState<Status>('waiting');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
@@ -91,6 +97,8 @@ export default function VideoInputForm() {
     await api.post(`/videos/${id}/transcription`, { prompt });
 
     setStatus('success');
+
+    onVideoUploaded(id);
   };
 
   const previewURL = useMemo(
